@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private UserService us;
@@ -50,5 +50,25 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
 
+    }
+
+    @PutMapping("/user/follow")
+    public User handleFollowUser(@RequestParam(name = "user")int user, @RequestParam(name = "toFollow")int toFollow ){
+        return us.followUser(user, toFollow);
+    }
+
+    @GetMapping("/user/followers/{id}")
+    public Set<User> handleUserFollowers(@PathVariable("id")int id){
+        return us.getCurrentUserById(id).getFollowers();
+    }
+
+    @GetMapping("/user/following/{id}")
+    public Set<User> handleUserFollowing(@PathVariable("id")int id){
+        return us.getCurrentUserById(id).getFollowing();
+    }
+
+    @GetMapping("/user")
+    public User getCurrentUser(@RequestParam(name="id")int id){
+        return us.getCurrentUserById(id);
     }
 }

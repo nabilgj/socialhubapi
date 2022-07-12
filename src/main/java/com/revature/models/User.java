@@ -1,6 +1,12 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -25,11 +31,32 @@ public class User {
     @Column(name="password")
     private String password;
 
-    /*
-    Set<User> following/followers..
-    */
+    @OneToMany(mappedBy = "postUser", cascade = CascadeType.ALL)
+    private List<Post> posts;
 
-    public User(){}
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name="followers_junction_table",
+            joinColumns = {@JoinColumn(name="followed_id")},
+            inverseJoinColumns = {@JoinColumn(name="user_id")}
+    )
+    @JsonIgnore
+    private Set<User> followers;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name="following_junction_table",
+            joinColumns = {@JoinColumn(name="following_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    @JsonIgnore
+    private Set<User> following;
+
+    public User(){
+        this.posts = new ArrayList<>();
+        this.followers = new HashSet<>();
+        this.following = new HashSet<>();
+    }
 
     public User(int userId, String firstName, String lastName, String username, String email, String password) {
         this.userId = userId;
@@ -38,6 +65,9 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.posts = new ArrayList<>();
+        this.followers = new HashSet<>();
+        this.following = new HashSet<>();
     }
 
     // can use this one when we get data from front end
@@ -48,6 +78,9 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.posts = new ArrayList<>();
+        this.followers = new HashSet<>();
+        this.following = new HashSet<>();
     }
 
     public int getUserId() {
@@ -98,6 +131,30 @@ public class User {
         this.password = password;
     }
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<User> followers) {
+        this.followers = followers;
+    }
+
+    public Set<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Set<User> following) {
+        this.following = following;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -107,6 +164,9 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", posts=" + posts +
+                ", followers=" + followers +
+                ", following=" + following +
                 '}';
     }
 }

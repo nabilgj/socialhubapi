@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.revature.models.User;
 
+import java.util.List;
+
 @Repository
 public interface UserRepo extends JpaRepository<User, Integer> {
 
@@ -17,4 +19,6 @@ public interface UserRepo extends JpaRepository<User, Integer> {
     public User findUserByUsername(String username);
 
     public User findUserByUsernameAndPassword(String username, String password);
+
+
 }
